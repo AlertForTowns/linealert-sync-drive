@@ -1,3 +1,8 @@
+
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), 'beadcore'))
+
 from beadcore.bead import Bead
 from beadcore.beadvol_writer import BeadVolumeWriter
 from beadcore.beadvol_reader import BeadVolumeReader

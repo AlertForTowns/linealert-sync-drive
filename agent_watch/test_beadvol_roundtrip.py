@@ -1,20 +1,17 @@
+# test_beadvol_roundtrip.py
 
-import sys
-import os
-sys.path.append(os.path.join(os.path.dirname(__file__), 'beadcore'))
-
-from beadcore.bead import Bead
+import time
 from beadcore.beadvol_writer import BeadVolumeWriter
 from beadcore.beadvol_reader import BeadVolumeReader
-import time
+from beadcore.bead import Bead
 
-# Write test
-writer = BeadVolumeWriter("test.beadvol")
-writer.append(Bead(time.time(), "setup_pkt", {"endpoint": 1}, label="init"))
-writer.append(Bead(time.time(), "data_xfer", {"bytes": [0x12, 0x34]}, comment="test xfer"))
-writer.close()
+writer = BeadVolumeWriter("test_output.beadvol")
+writer.append_bead(Bead(time.time(), "setup_pkt", {"endpoint": 1}, label="init"))
+writer.append_bead(Bead(time.time(), "data_pkt", {"data": [0x01, 0x02]}, label="payload"))
 
-# Read back
-reader = BeadVolumeReader("test.beadvol")
-for bead in reader.stream_beads():
-    print(bead.to_dict())
+print("Wrote 2 beads to test_output.beadvol")
+
+print("Reading back contents...")
+reader = BeadVolumeReader("test_output.beadvol")
+for bead in reader:
+    print(f"{bead.timestamp:.2f} | {bead.bead_type.upper():10} | {bead.payload} | {bead.label}")
